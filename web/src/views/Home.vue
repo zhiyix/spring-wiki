@@ -1,19 +1,22 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-    <a-button type="danger">Danger</a-button>
-  </div>
+  <a-breadcrumb style="margin: 16px 0">
+    <a-breadcrumb-item>Home</a-breadcrumb-item>
+    <a-breadcrumb-item>List</a-breadcrumb-item>
+    <a-breadcrumb-item>App</a-breadcrumb-item>
+  </a-breadcrumb>
+  <a-layout-content
+      :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
+  >
+    Content
+  </a-layout-content>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 
 export default defineComponent({
   name: 'Home',
   components: {
-    HelloWorld,
   },
 });
 </script>
