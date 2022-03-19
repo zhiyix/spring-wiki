@@ -6,5 +6,9 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/wiki?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true
-    username: wiki
+    username: root
     password: zhiyix.MySQL.410324
+
+# 配置mybatis所有Mapper.xml所在的路径
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
