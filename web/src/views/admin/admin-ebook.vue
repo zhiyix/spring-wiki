@@ -1,54 +1,42 @@
 <template>
-  <a-list item-layout="vertical" size="large" :pagination="pagination" :data-source="listData">
-    <template #footer>
-      <div>
-        <b>ant design vue</b>
-        footer part
-      </div>
-    </template>
-    <template #renderItem="{ item }">
-      <a-list-item key="item.title">
-        <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component v-bind:is="type" style="margin-right: 8px" />
-            {{ text }}
-          </span>
-        </template>
-        <template #extra>
-          <img
-              width="272"
-              alt="logo"
-              src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-          />
-        </template>
-        <a-list-item-meta :description="item.description">
-          <template #title>
-            <a :href="item.href">{{ item.title }}</a>
-          </template>
-          <template #avatar><a-avatar :src="item.avatar" /></template>
-        </a-list-item-meta>
-        {{ item.content }}
-      </a-list-item>
-    </template>
-  </a-list>
+  <a-layout-content
+      :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
+  >
+    <a-table
+        :columns="columns"
+        :row-key="record => record.id"
+        :data-source="ebooks"
+        :pagination="pagination"
+        :loading="loading"
+        @change="handleTableChange"
+    >
+      <template #cover="{ text: cover }">
+        <img v-if="cover" :src="cover" alt="avatar" />
+      </template>
+      <template v-slot:action="{ text, record }">
+        <a-space size="small">
+          <a-button type="primary" @click="edit(record)">
+            编辑
+          </a-button>
+          <a-popconfirm
+              title="删除后不可恢复，确认删除?"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="handleDelete(record.id)"
+          >
+            <a-button type="danger">
+              删除
+            </a-button>
+          </a-popconfirm>
+        </a-space>
+      </template>
+    </a-table>
+  </a-layout-content>
 </template>
 <script lang="ts">
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
-import { defineComponent } from 'vue';
-
-const listData: Record<string, string>[] = [];
-
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
+import { defineComponent, ref, onMounted } from 'vue';
+import axios from 'axios';
 
 export default defineComponent({
   components: {
@@ -57,21 +45,84 @@ export default defineComponent({
     MessageOutlined,
   },
   setup() {
-    const pagination = {
-      onChange: (page: number) => {
-        console.log(page);
+    const ebooks = ref();
+    const pagination = ref({
+      current: 1,
+      pageSize: 10,
+      total: 0
+    });
+    const loading = ref(false);
+    const columns = [
+      {
+        title: '封面',
+        dataIndex: 'cover',
+        slots: { customRender: 'cover' }
       },
-      pageSize: 3,
-    };
-    const actions: Record<string, string>[] = [
-      { type: 'StarOutlined', text: '156' },
-      { type: 'LikeOutlined', text: '156' },
-      { type: 'MessageOutlined', text: '2' },
+      {
+        title: '名称',
+        dataIndex: 'name'
+      },
+      {
+        title: '分类',
+        slots: { customRender: 'category' }
+      },
+      {
+        title: '文档数',
+        dataIndex: 'docCount'
+      },
+      {
+        title: '阅读数',
+        dataIndex: 'viewCount'
+      },
+      {
+        title: '点赞数',
+        dataIndex: 'voteCount'
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        slots: { customRender: 'action' }
+      }
     ];
+
+    /**
+     * 数据查询
+     **/
+    const handleQuery = (params: any) => {
+      loading.value = true;
+      // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
+      ebooks.value = [];
+      axios.get("/ebook/list").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        ebooks.value = data;
+
+        // 重置分页按钮
+        pagination.value.current = params.page;
+      });
+    };
+
+    /**
+     * 表格点击页码时触发
+     */
+    const handleTableChange = (pagination: any) => {
+      console.log("看看自带的分页参数都有啥：" + pagination);
+      handleQuery({
+        page: pagination.current,
+        size: pagination.pageSize
+      });
+    };
+
+    onMounted(() => {
+      handleQuery({});
+    })
+
     return {
-      listData,
+      ebooks,
       pagination,
-      actions,
+      columns,
+      loading,
+      handleTableChange
     };
   },
 });

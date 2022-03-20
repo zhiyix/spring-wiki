@@ -1,24 +1,17 @@
 <template>
-  <a-layout>
+  <a-layout id="components-layout-demo-top-side-2">
     <the-header></the-header>
-    <a-layout>
-      <the-menu></the-menu>
-      <a-layout style="padding: 0 24px 24px">
-        <router-view/>
-      </a-layout>
-    </a-layout>
+    <router-view/>
     <the-footer></the-footer>
   </a-layout>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
-import TheMenu from '@/components/the-menu.vue';
 import TheHeader from '@/components/the-header.vue';
 import TheFooter from '@/components/the-footer.vue';
 
 export default defineComponent({
   components: {
-    TheMenu,
     TheHeader,
     TheFooter
   }
