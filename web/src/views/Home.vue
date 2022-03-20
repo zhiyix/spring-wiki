@@ -60,7 +60,7 @@ export default defineComponent({
 
     onMounted(() => {
       console.log("onMounted")
-      axios.get("http://127.0.0.1:8081/ebook/list?name=Spring").then((response) => {
+      axios.get("/ebook/list?name=Spring").then((response) => {
         ebooks.value = response.data
         ebooks2.books = response.data
         console.log(response)
