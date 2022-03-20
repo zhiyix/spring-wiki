@@ -1,11 +1,12 @@
 package com.imetre.wiki.controller;
 
 import com.imetre.wiki.domain.EBook;
+import com.imetre.wiki.request.EBookReq;
+import com.imetre.wiki.response.PageResp;
 import com.imetre.wiki.service.EBookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 @RequestMapping("/ebook")
@@ -15,8 +16,8 @@ public class EBookController {
     private EBookService eBookService;
 
     @GetMapping("/list")
-    public List<EBook> list() {
-        List<EBook> list = eBookService.list();
+    public PageResp<EBook> list(EBookReq req) {
+        PageResp<EBook> list = eBookService.list(req);
         return list;
     }
 
