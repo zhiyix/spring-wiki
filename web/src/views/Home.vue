@@ -7,7 +7,7 @@
   <a-layout-content
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
   >
-    <pre>{{ebooks}}</pre>
+    <pre>{{ebooks2}}</pre>
   </a-layout-content>
 </template>
 
@@ -27,9 +27,8 @@ export default defineComponent({
     onMounted(() => {
       console.log("onMounted")
       axios.get("http://127.0.0.1:8081/ebook/list?name=Spring").then((response) => {
-        const data = response.data
-        ebooks.value = data
-        ebooks2.books = data
+        ebooks.value = response.data
+        ebooks2.books = response.data
         console.log(response)
       })
     })
