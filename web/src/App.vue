@@ -11,7 +11,6 @@
   </a-layout>
 </template>
 <script lang="ts">
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 import { defineComponent } from 'vue';
 import TheMenu from '@/components/the-menu.vue';
 import TheHeader from '@/components/the-header.vue';
@@ -19,9 +18,6 @@ import TheFooter from '@/components/the-footer.vue';
 
 export default defineComponent({
   components: {
-    UserOutlined,
-    LaptopOutlined,
-    NotificationOutlined,
     TheMenu,
     TheHeader,
     TheFooter
