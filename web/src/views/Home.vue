@@ -7,16 +7,37 @@
   <a-layout-content
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
   >
-    Content
+    <pre>{{ebooks}}</pre>
   </a-layout-content>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, reactive, onMounted, toRef } from 'vue';
+import axios from "axios";
 
 export default defineComponent({
   name: 'Home',
   components: {
   },
-});
+  setup() {
+    console.log("setup")
+    const ebooks = ref()
+    const ebooks2 = reactive({books: []})
+
+    onMounted(() => {
+      console.log("onMounted")
+      axios.get("http://127.0.0.1:8081/ebook/list?name=Spring").then((response) => {
+        const data = response.data
+        ebooks.value = data.content
+        ebooks2.books = data.content
+        console.log(response)
+      })
+    })
+
+    return {
+      ebooks,
+      ebooks2: toRef(ebooks2, "books")
+    }
+  }
+})
 </script>
