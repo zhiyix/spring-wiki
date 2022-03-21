@@ -10,6 +10,7 @@ import com.imetre.wiki.request.EBookQueryReq;
 import com.imetre.wiki.request.EBookSaveReq;
 import com.imetre.wiki.response.PageResp;
 import com.imetre.wiki.utils.CopyUtil;
+import com.imetre.wiki.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,10 @@ public class EBookService {
     private final static Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
     @Resource
-    private EBookMapper EBookMapper;
+    private EBookMapper eBookMapper;
+
+    @Resource
+    private SnowFlake snowFlake;
 
     public PageResp<EBook> list(EBookQueryReq req) {
         EBookExample eBookExample = new EBookExample();
@@ -35,7 +39,7 @@ public class EBookService {
 //            criteria.andCategory2IdEqualTo(req.getCategoryId2());
 //        }
         PageHelper.startPage(req.getPage(), req.getSize());
-        List<EBook> eBooks = EBookMapper.selectByExample(eBookExample);
+        List<EBook> eBooks = eBookMapper.selectByExample(eBookExample);
 
         PageInfo<EBook> pageInfo = new PageInfo<>(eBooks);
         LOG.info("总行数：{}", pageInfo.getTotal());
@@ -63,20 +67,20 @@ public class EBookService {
 
     /**
      * 保存
-     */0.6.8 完成电子书编辑功能，编辑成功后刷新列表
+     */
     public void save(EBookSaveReq req) {
-        EBook EBook = CopyUtil.copy(req, EBook.class);
+        EBook ebook = CopyUtil.copy(req, EBook.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
-            //EBook.setId(snowFlake.nextId());
-            EBookMapper.insert(EBook);
+            ebook.setId(snowFlake.nextId());
+            eBookMapper.insert(ebook);
         } else {
             // 更新
-            EBookMapper.updateByPrimaryKey(EBook);
+            eBookMapper.updateByPrimaryKey(ebook);
         }
     }
 
     public void delete(Long id) {
-        EBookMapper.deleteByPrimaryKey(id);
+        eBookMapper.deleteByPrimaryKey(id);
     }
 }

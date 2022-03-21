@@ -2,6 +2,11 @@
   <a-layout-content
       :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
   >
+    <p>
+      <a-button type="primary" @click="handleAdd()">
+        新增
+      </a-button>
+    </p>
     <a-table
         :columns="columns"
         :row-key="record => record.id"
@@ -22,7 +27,7 @@
               title="删除后不可恢复，确认删除?"
               ok-text="是"
               cancel-text="否"
-              @confirm="handleDelete(record.id)"
+              @confirm="handleDelete(record)"
           >
             <a-button type="danger">
               删除
@@ -158,6 +163,25 @@ export default defineComponent({
       ebook.value = tools.copy(record);
       visible.value = true;
     };
+    /**
+     * 新增
+     */
+    const handleAdd = () => {
+      ebook.value = {}
+      visible.value = true;
+    }
+    /**
+     * 删除
+     */
+    const handleDelete = (record: any) => {
+      axios.delete("/ebook/delete/" + record.id).then((response) => {
+        // 重新加载列表
+        handleQuery({
+          page: pagination.value.current,
+          size: pagination.value.pageSize,
+        });
+      });
+    }
     const showModal = () => {
       visible.value = true;
     };
@@ -190,9 +214,12 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+
       // modal dialog
       ebook,
+      handleAdd,
       handleEdit,
+      handleDelete,
       modalText,
       visible,
       confirmLoading,
