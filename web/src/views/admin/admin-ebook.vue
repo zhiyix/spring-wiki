@@ -15,7 +15,7 @@
       </template>
       <template v-slot:action="{ text, record }">
         <a-space size="small">
-          <a-button type="primary" @click="edit(record)">
+          <a-button type="primary" @click="handleEdit(record)">
             编辑
           </a-button>
           <a-popconfirm
@@ -32,6 +32,14 @@
       </template>
     </a-table>
   </a-layout-content>
+  <a-modal
+      title="Title"
+      v-model:visible="visible"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+  >
+    <p>{{ modalText }}</p>
+  </a-modal>
 </template>
 <script lang="ts">
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
@@ -48,7 +56,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 10,
+      pageSize: 5,
       total: 0
     });
     const loading = ref(false);
@@ -92,13 +100,19 @@ export default defineComponent({
       loading.value = true;
       // 如果不清空现有数据，则编辑保存重新加载数据后，再点编辑，则列表显示的还是编辑前的数据
       ebooks.value = [];
-      axios.get("/ebook/list").then((response) => {
+      axios.get("/ebook/list", {
+        params: {
+          page: params.page,
+          size: params.size
+        }
+      }).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data;
+        ebooks.value = data.list;
 
         // 重置分页按钮
         pagination.value.current = params.page;
+        pagination.value.total = data.total;
       });
     };
 
@@ -113,8 +127,33 @@ export default defineComponent({
       });
     };
 
+    /**
+     * 编辑
+     */
+    const handleEdit = (record: any) => {
+      visible.value = true;
+    };
+    // modal dialog
+    const modalText = ref<string>('Content of the modal');
+    const visible = ref<boolean>(false);
+    const confirmLoading = ref<boolean>(false);
+    const showModal = () => {
+      visible.value = true;
+    };
+    const handleOk = () => {
+      modalText.value = 'The modal will be closed after two seconds';
+      confirmLoading.value = true;
+      setTimeout(() => {
+        visible.value = false;
+        confirmLoading.value = false;
+      }, 2000);
+    };
+
     onMounted(() => {
-      handleQuery({});
+      handleQuery({
+        page: pagination.value.current,
+        size: pagination.value.pageSize,
+      });
     })
 
     return {
@@ -122,7 +161,14 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+      // modal dialog
+      handleEdit,
+      modalText,
+      visible,
+      confirmLoading,
+      showModal,
+      handleOk,
     };
   },
 });
