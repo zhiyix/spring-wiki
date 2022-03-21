@@ -38,13 +38,31 @@
       :confirm-loading="confirmLoading"
       @ok="handleOk"
   >
-    <p>{{ modalText }}</p>
+    <a-form :model="ebook" :label-col="{ span: 6 }" :wrapper-col="{ span: 18 }">
+      <a-form-item label="封面">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="分类">
+        <a-cascader
+            v-model:value="categoryIds"
+            :field-names="{ label: 'name', value: 'id', children: 'children' }"
+            :options="level1"
+        />
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input v-model:value="ebook.description" type="textarea" />
+      </a-form-item>
+    </a-form>
   </a-modal>
 </template>
 <script lang="ts">
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref, onMounted } from 'vue';
 import axios from 'axios';
+import {tools} from '@/utils/tools'
 
 export default defineComponent({
   components: {
@@ -127,26 +145,36 @@ export default defineComponent({
       });
     };
 
+    /////////////////////////////////////// 模态 ////////////////////////////////////////////////////////////////////////
+    // modal dialog
+    const ebook = ref();
+    const modalText = ref<string>('Content of the modal');
+    const visible = ref<boolean>(false);
+    const confirmLoading = ref<boolean>(false);
     /**
      * 编辑
      */
     const handleEdit = (record: any) => {
+      ebook.value = tools.copy(record);
       visible.value = true;
     };
-    // modal dialog
-    const modalText = ref<string>('Content of the modal');
-    const visible = ref<boolean>(false);
-    const confirmLoading = ref<boolean>(false);
     const showModal = () => {
       visible.value = true;
     };
     const handleOk = () => {
       modalText.value = 'The modal will be closed after two seconds';
       confirmLoading.value = true;
-      setTimeout(() => {
-        visible.value = false;
+      axios.post("/ebook/save", ebook.value).then((response) => {
         confirmLoading.value = false;
-      }, 2000);
+
+        visible.value = false;
+
+        // 重新加载列表
+        handleQuery({
+          page: pagination.value.current,
+          size: pagination.value.pageSize,
+        });
+      });
     };
 
     onMounted(() => {
@@ -163,6 +191,7 @@ export default defineComponent({
       loading,
       handleTableChange,
       // modal dialog
+      ebook,
       handleEdit,
       modalText,
       visible,

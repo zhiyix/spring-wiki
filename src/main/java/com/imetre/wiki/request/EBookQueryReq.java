@@ -1,6 +1,6 @@
 package com.imetre.wiki.request;
 
-public class EBookReq extends PageReq {
+public class EBookQueryReq extends PageReq {
     private Long id;
 
     private String name;

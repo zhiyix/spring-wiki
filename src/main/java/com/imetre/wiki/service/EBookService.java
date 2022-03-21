@@ -6,8 +6,10 @@ import com.imetre.wiki.aspect.LogAspect;
 import com.imetre.wiki.domain.EBook;
 import com.imetre.wiki.domain.EBookExample;
 import com.imetre.wiki.mapper.EBookMapper;
-import com.imetre.wiki.request.EBookReq;
+import com.imetre.wiki.request.EBookQueryReq;
+import com.imetre.wiki.request.EBookSaveReq;
 import com.imetre.wiki.response.PageResp;
+import com.imetre.wiki.utils.CopyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class EBookService {
     @Resource
     private EBookMapper EBookMapper;
 
-    public PageResp<EBook> list(EBookReq req) {
+    public PageResp<EBook> list(EBookQueryReq req) {
         EBookExample eBookExample = new EBookExample();
         EBookExample.Criteria criteria = eBookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName())) {
@@ -61,18 +63,18 @@ public class EBookService {
 
     /**
      * 保存
-     *
+     */0.6.8 完成电子书编辑功能，编辑成功后刷新列表
     public void save(EBookSaveReq req) {
         EBook EBook = CopyUtil.copy(req, EBook.class);
         if (ObjectUtils.isEmpty(req.getId())) {
             // 新增
-            EBook.setId(snowFlake.nextId());
+            //EBook.setId(snowFlake.nextId());
             EBookMapper.insert(EBook);
         } else {
             // 更新
             EBookMapper.updateByPrimaryKey(EBook);
         }
-    }*/
+    }
 
     public void delete(Long id) {
         EBookMapper.deleteByPrimaryKey(id);
