@@ -1,7 +1,7 @@
 package com.imetre.wiki.domain;
 
 public class EBook {
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -17,12 +17,12 @@ public class EBook {
 
     private Integer voteCount;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id = String.valueOf(id);
     }
 
     public String getName() {
