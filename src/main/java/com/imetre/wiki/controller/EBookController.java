@@ -8,6 +8,7 @@ import com.imetre.wiki.service.EBookService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/ebook")
@@ -17,7 +18,7 @@ public class EBookController {
     private EBookService eBookService;
 
     @GetMapping("/list")
-    public PageResp<EBook> list(EBookQueryReq req) {
+    public PageResp<EBook> list(@Valid EBookQueryReq req) {
         PageResp<EBook> list = eBookService.list(req);
         return list;
     }
