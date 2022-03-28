@@ -4,12 +4,13 @@
   <resultMap id="BaseResultMap" type="com.imetre.wiki.domain.EBook">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="category_id" jdbcType="BIGINT" property="categoryId" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="cover" jdbcType="VARCHAR" property="cover" />
     <result column="doc_count" jdbcType="INTEGER" property="docCount" />
     <result column="view_count" jdbcType="INTEGER" property="viewCount" />
     <result column="vote_count" jdbcType="INTEGER" property="voteCount" />
+    <result column="category1_id" jdbcType="BIGINT" property="category1Id" />
+    <result column="category2_id" jdbcType="BIGINT" property="category2Id" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, `name`, category_id, description, cover, doc_count, view_count, vote_count
+    id, `name`, description, cover, doc_count, view_count, vote_count, category1_id, 
+    category2_id
   </sql>
   <select id="selectByExample" parameterType="com.imetre.wiki.domain.EBookExample" resultMap="BaseResultMap">
     select
@@ -103,12 +105,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.imetre.wiki.domain.EBook">
-    insert into ebook (id, `name`, category_id, 
-      description, cover, doc_count, 
-      view_count, vote_count)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{categoryId,jdbcType=BIGINT}, 
-      #{description,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, #{docCount,jdbcType=INTEGER}, 
-      #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER})
+    insert into ebook (id, `name`, description, 
+      cover, doc_count, view_count, 
+      vote_count, category1_id, category2_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{cover,jdbcType=VARCHAR}, #{docCount,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, 
+      #{voteCount,jdbcType=INTEGER}, #{category1Id,jdbcType=BIGINT}, #{category2Id,jdbcType=BIGINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.imetre.wiki.domain.EBook">
     insert into ebook
@@ -118,9 +122,6 @@
       </if>
       <if test="name != null">
         `name`,
-      </if>
-      <if test="categoryId != null">
-        category_id,
       </if>
       <if test="description != null">
         description,
@@ -137,6 +138,12 @@
       <if test="voteCount != null">
         vote_count,
       </if>
+      <if test="category1Id != null">
+        category1_id,
+      </if>
+      <if test="category2Id != null">
+        category2_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -144,9 +151,6 @@
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryId != null">
-        #{categoryId,jdbcType=BIGINT},
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
@@ -162,6 +166,12 @@
       </if>
       <if test="voteCount != null">
         #{voteCount,jdbcType=INTEGER},
+      </if>
+      <if test="category1Id != null">
+        #{category1Id,jdbcType=BIGINT},
+      </if>
+      <if test="category2Id != null">
+        #{category2Id,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -180,9 +190,6 @@
       <if test="record.name != null">
         `name` = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.categoryId != null">
-        category_id = #{record.categoryId,jdbcType=BIGINT},
-      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
       </if>
@@ -198,6 +205,12 @@
       <if test="record.voteCount != null">
         vote_count = #{record.voteCount,jdbcType=INTEGER},
       </if>
+      <if test="record.category1Id != null">
+        category1_id = #{record.category1Id,jdbcType=BIGINT},
+      </if>
+      <if test="record.category2Id != null">
+        category2_id = #{record.category2Id,jdbcType=BIGINT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -207,12 +220,13 @@
     update ebook
     set id = #{record.id,jdbcType=BIGINT},
       `name` = #{record.name,jdbcType=VARCHAR},
-      category_id = #{record.categoryId,jdbcType=BIGINT},
       description = #{record.description,jdbcType=VARCHAR},
       cover = #{record.cover,jdbcType=VARCHAR},
       doc_count = #{record.docCount,jdbcType=INTEGER},
       view_count = #{record.viewCount,jdbcType=INTEGER},
-      vote_count = #{record.voteCount,jdbcType=INTEGER}
+      vote_count = #{record.voteCount,jdbcType=INTEGER},
+      category1_id = #{record.category1Id,jdbcType=BIGINT},
+      category2_id = #{record.category2Id,jdbcType=BIGINT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -222,9 +236,6 @@
     <set>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryId != null">
-        category_id = #{categoryId,jdbcType=BIGINT},
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
@@ -241,18 +252,25 @@
       <if test="voteCount != null">
         vote_count = #{voteCount,jdbcType=INTEGER},
       </if>
+      <if test="category1Id != null">
+        category1_id = #{category1Id,jdbcType=BIGINT},
+      </if>
+      <if test="category2Id != null">
+        category2_id = #{category2Id,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.imetre.wiki.domain.EBook">
     update ebook
     set `name` = #{name,jdbcType=VARCHAR},
-      category_id = #{categoryId,jdbcType=BIGINT},
       description = #{description,jdbcType=VARCHAR},
       cover = #{cover,jdbcType=VARCHAR},
       doc_count = #{docCount,jdbcType=INTEGER},
       view_count = #{viewCount,jdbcType=INTEGER},
-      vote_count = #{voteCount,jdbcType=INTEGER}
+      vote_count = #{voteCount,jdbcType=INTEGER},
+      category1_id = #{category1Id,jdbcType=BIGINT},
+      category2_id = #{category2Id,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

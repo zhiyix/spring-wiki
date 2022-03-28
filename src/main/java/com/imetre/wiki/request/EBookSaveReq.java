@@ -5,7 +5,9 @@ public class EBookSaveReq {
 
     private String name;
 
-    private Long categoryId;
+    private Long category1Id;
+
+    private Long category2Id;
 
     private String description;
 
@@ -33,12 +35,20 @@ public class EBookSaveReq {
         this.name = name;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public Long getCategory1Id() {
+        return category1Id;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory1Id(Long categoryId) {
+        this.category1Id = categoryId;
+    }
+
+    public Long getCategory2Id() {
+        return category2Id;
+    }
+
+    public void setCategory2Id(Long categoryId) {
+        this.category2Id = categoryId;
     }
 
     public String getDescription() {
@@ -89,7 +99,8 @@ public class EBookSaveReq {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", categoryId=").append(categoryId);
+        sb.append(", category1Id=").append(category1Id);
+        sb.append(", category2Id=").append(category2Id);
         sb.append(", description=").append(description);
         sb.append(", cover=").append(cover);
         sb.append(", docCount=").append(docCount);

@@ -5,8 +5,6 @@ public class EBook {
 
     private String name;
 
-    private Long categoryId;
-
     private String description;
 
     private String cover;
@@ -16,6 +14,10 @@ public class EBook {
     private Integer viewCount;
 
     private Integer voteCount;
+
+    private String category1Id;
+
+    private String category2Id;
 
     public String getId() {
         return id;
@@ -31,14 +33,6 @@ public class EBook {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getDescription() {
@@ -81,6 +75,22 @@ public class EBook {
         this.voteCount = voteCount;
     }
 
+    public String getCategory1Id() {
+        return category1Id;
+    }
+
+    public void setCategory1Id(Long category1Id) {
+        this.category1Id = String.valueOf(category1Id);
+    }
+
+    public String getCategory2Id() {
+        return category2Id;
+    }
+
+    public void setCategory2Id(Long category2Id) {
+        this.category2Id = String.valueOf(category2Id);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -89,12 +99,13 @@ public class EBook {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", categoryId=").append(categoryId);
         sb.append(", description=").append(description);
         sb.append(", cover=").append(cover);
         sb.append(", docCount=").append(docCount);
         sb.append(", viewCount=").append(viewCount);
         sb.append(", voteCount=").append(voteCount);
+        sb.append(", category1Id=").append(category1Id);
+        sb.append(", category2Id=").append(category2Id);
         sb.append("]");
         return sb.toString();
     }
