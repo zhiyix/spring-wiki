@@ -1,28 +1,28 @@
 package com.imetre.wiki.domain;
 
 public class EBookCategory {
-    private Long id;
+    private String id;
 
-    private Long parent;
+    private String parent;
 
     private String name;
 
     private Integer sort;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id = String.valueOf(id);
     }
 
-    public Long getParent() {
+    public String getParent() {
         return parent;
     }
 
     public void setParent(Long parent) {
-        this.parent = parent;
+        this.parent = String.valueOf(parent);
     }
 
     public String getName() {

@@ -166,15 +166,12 @@ export default defineComponent({
       modalLoading.value = true;
       axios.post("/ebook/category/save", category.value).then((response) => {
         modalLoading.value = false;
-        const data = response.data; // data = commonResp
-        if (data.success) {
-          modalVisible.value = false;
+        modalVisible.value = false;
 
-          // 重新加载列表
-          handleQuery();
-        } else {
-          message.error(data.message);
-        }
+        // 重新加载列表
+        handleQuery();
+      }).catch((error) => {
+        message.error(error);
       });
     };
 
@@ -197,12 +194,10 @@ export default defineComponent({
     const handleDelete = (id: number) => {
       axios.delete("/ebook/category/delete/" + id).then((response) => {
         const data = response.data; // data = commonResp
-        if (data.success) {
-          // 重新加载列表
-          handleQuery();
-        } else {
-          message.error(data.message);
-        }
+        // 重新加载列表
+        handleQuery();
+      }).catch((error) => {
+        message.error(error);
       });
     };
 
