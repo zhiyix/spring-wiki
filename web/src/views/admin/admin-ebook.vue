@@ -80,7 +80,8 @@
 import { StarOutlined, LikeOutlined, MessageOutlined } from '@ant-design/icons-vue';
 import { defineComponent, ref, onMounted } from 'vue';
 import axios from 'axios';
-import {tools} from '@/utils/tools'
+import { message } from 'ant-design-vue';
+import { tools } from '@/utils/tools'
 
 export default defineComponent({
   components: {
@@ -168,6 +169,12 @@ export default defineComponent({
 
     /////////////////////////////////////// 模态 ////////////////////////////////////////////////////////////////////////
     // modal dialog
+    // -------- 表单 ---------
+    /**
+     * 数组，[100, 101]对应：前端开发 / Vue
+     */
+    const categoryIds = ref();
+    const level1 =  ref();
     const ebook = ref();
     const modalText = ref<string>('Content of the modal');
     const visible = ref<boolean>(false);
@@ -178,7 +185,9 @@ export default defineComponent({
     const handleEdit = (record: any) => {
       ebook.value = tools.copy(record);
       visible.value = true;
+      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
     };
+
     /**
      * 新增
      */
@@ -204,6 +213,8 @@ export default defineComponent({
     const handleOk = () => {
       modalText.value = 'The modal will be closed after two seconds';
       confirmLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
       axios.post("/ebook/save", ebook.value).then((response) => {
         confirmLoading.value = false;
 
@@ -216,8 +227,33 @@ export default defineComponent({
         });
       });
     };
+    /**
+     * 查询所有分类
+     **/
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/ebook/category/all").then((response) => {
+        loading.value = false;
+        const data = response.data;
+        const categorys = data;
+        console.log("原始数组：", categorys);
+
+        level1.value = [];
+        level1.value = tools.array2Tree(categorys, 0);
+        console.log("树形结构：", level1.value);
+
+        // 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
+        handleQuery({
+          page: 1,
+          size: pagination.value.pageSize,
+        });
+      }).catch((error) => {
+        message.error(error);
+      });
+    };
 
     onMounted(() => {
+      handleQueryCategory();
       handleQuery({
         page: pagination.value.current,
         size: pagination.value.pageSize,
@@ -233,6 +269,8 @@ export default defineComponent({
       handleTableChange,
 
       // modal dialog
+      categoryIds,
+      level1,
       ebook,
       handleQuery,
       handleAdd,
