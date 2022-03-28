@@ -240,6 +240,7 @@ export default defineComponent({
       axios.get("/ebook/category/all").then((response) => {
         loading.value = false;
         const data = response.data;
+
         categorys = data;
         console.log("原始数组：", categorys);
 
@@ -271,10 +272,12 @@ export default defineComponent({
 
     onMounted(() => {
       handleQueryCategory();
+      // 0.7.7 加载完分类后，再加载电子书，否则如果分类树加载很慢，则电子书渲染会报错
+      /*
       handleQuery({
         page: pagination.value.current,
         size: pagination.value.pageSize,
-      });
+      });*/
     })
 
     return {

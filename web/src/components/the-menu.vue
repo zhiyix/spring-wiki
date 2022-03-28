@@ -2,52 +2,33 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         mode="inline"
-        v-model:selectedKeys="selectedKeys"
-        v-model:openKeys="openKeys"
+        :openKeys="openKeys"
         :style="{ height: '100%', borderRight: 0 }"
     >
-      <a-sub-menu key="sub1">
-        <template #title>
-              <span>
-                <user-outlined />
-                subnav 1
-              </span>
-        </template>
-        <a-menu-item key="1">option1-1</a-menu-item>
-        <a-menu-item key="2">option2</a-menu-item>
-        <a-menu-item key="3">option3</a-menu-item>
-        <a-menu-item key="4">option4</a-menu-item>
+      <a-menu-item key="welcome">
+        <MailOutlined />
+        <span>欢迎</span>
+      </a-menu-item>
+      <a-sub-menu v-for="item in level1" :key="item.id" :disabled="true">
+      <template v-slot:title>
+        <span><user-outlined />{{item.name}}</span>
+      </template>
+      <a-menu-item v-for="child in item.children" :key="child.id">
+        <MailOutlined /><span>{{child.name}}</span>
+      </a-menu-item>
       </a-sub-menu>
-      <a-sub-menu key="sub2">
-        <template #title>
-              <span>
-                <laptop-outlined />
-                subnav 2
-              </span>
-        </template>
-        <a-menu-item key="5">option5</a-menu-item>
-        <a-menu-item key="6">option6</a-menu-item>
-        <a-menu-item key="7">option7</a-menu-item>
-        <a-menu-item key="8">option8</a-menu-item>
-      </a-sub-menu>
-      <a-sub-menu key="sub3">
-        <template #title>
-              <span>
-                <notification-outlined />
-                subnav 3
-              </span>
-        </template>
-        <a-menu-item key="9">option9</a-menu-item>
-        <a-menu-item key="10">option10</a-menu-item>
-        <a-menu-item key="11">option11</a-menu-item>
-        <a-menu-item key="12">option12</a-menu-item>
-      </a-sub-menu>
+      <a-menu-item key="tip" :disabled="true">
+        <span>以上菜单在分类管理配置</span>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
+import axios from 'axios';
+import {message} from 'ant-design-vue';
+import {tools} from "@/utils/tools";
 
 export default defineComponent({
   name: 'TheMenu',
@@ -55,10 +36,39 @@ export default defineComponent({
     msg: String,
   },
   setup() {
+    const level1 =  ref();
+    let categorys: any;
+    const openKeys =  ref();
+
+    /**
+     * 查询所有分类
+     **/
+    const handleQueryCategory = () => {
+      axios.get("/ebook/category/all").then((response) => {
+        categorys = response.data;
+        console.log("原始数组：", categorys);
+
+        // 加载完分类后，将侧边栏全部展开
+        openKeys.value = [];
+        for (let i = 0; i < categorys.length; i++) {
+          openKeys.value.push(categorys[i].id)
+        }
+
+        level1.value = [];
+        level1.value = tools.array2Tree(categorys, 0);
+        console.log("树形结构：", level1.value);
+      }).catch((error) => {
+        message.error(error);
+      });
+    };
+
+    onMounted(() => {
+      handleQueryCategory();
+    });
+
     return {
-      selectedKeys: ref<string[]>(['1']),
-      collapsed: ref<boolean>(false),
-      openKeys: ref<string[]>(['sub1']),
+      level1,
+      openKeys
     };
   },
 });
