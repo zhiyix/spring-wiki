@@ -2,8 +2,8 @@
   <a-layout-sider width="200" style="background: #fff">
     <a-menu
         mode="inline"
-        :openKeys="openKeys"
         :style="{ height: '100%', borderRight: 0 }"
+        :openKeys="openKeys"
     >
       <a-menu-item key="welcome">
         <MailOutlined />
