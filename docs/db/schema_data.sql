@@ -64,3 +64,18 @@ VALUES
 ALTER TABLE `ebook` DROP COLUMN `category_id`;
 ALTER TABLE `ebook` ADD `category1_id` BIGINT COMMENT '分类1';
 ALTER TABLE `ebook` ADD `category2_id` BIGINT COMMENT '分类2';
+
+# 0.8.2
+DROP TABLE IF EXISTS `doc`;
+CREATE TABLE `doc` (
+                       `id` BIGINT NOT NULL COMMENT 'id',
+                       `ebook_id` BIGINT NOT NULL DEFAULT 0 COMMENT '电子书ID',
+                       `parent` BIGINT NOT NULL DEFAULT 0 COMMENT '父ID',
+                       `name` VARCHAR(128) NOT NULL COMMENT '名称',
+                       `sort` INT COMMENT '顺序',
+                       `view_count` INT DEFAULT 0 COMMENT '阅读量',
+                       `vote_count` INT DEFAULT 0 COMMENT '点赞数',
+                       PRIMARY KEY(`id`)
+) engine=innodb default charset=utf8mb4 comment='文档';
+
+INSERT INTO `doc`(id, ebook_id, parent, name, sort, view_count, vote_count) VALUES(1,1,0,'文档1',1,0,0);
